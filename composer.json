@@ -1,0 +1,15 @@
+{
+    "name": "hexlet/code",
+    "description": "gendiff",
+    "type": "project",
+    "license": "mit",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "docopt/docopt": "dev-master"
+    }
+}
