@@ -8,10 +8,8 @@ class DiffBuilder
 {
     public function build(array $data1, array $data2): string
     {
-        // Получаем все уникальные ключи из обоих массивов
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
         
-        // Сортируем ключи в алфавитном порядке (иммутабельно)
         $allKeys = sortBy($allKeys, fn($key) => $key);
         
         $lines = ['{'];
@@ -21,20 +19,15 @@ class DiffBuilder
             $inSecond = array_key_exists($key, $data2);
             
             if ($inFirst && $inSecond) {
-                // Ключ есть в обоих файлах
                 if ($data1[$key] === $data2[$key]) {
-                    // Значения одинаковые
                     $lines[] = $this->formatLine(' ', $key, $data1[$key]);
                 } else {
-                    // Значения разные - сначала из первого файла, потом из второго
                     $lines[] = $this->formatLine('-', $key, $data1[$key]);
                     $lines[] = $this->formatLine('+', $key, $data2[$key]);
                 }
             } elseif ($inFirst) {
-                // Ключ только в первом файле
                 $lines[] = $this->formatLine('-', $key, $data1[$key]);
             } else {
-                // Ключ только во втором файле
                 $lines[] = $this->formatLine('+', $key, $data2[$key]);
             }
         }
@@ -46,8 +39,7 @@ class DiffBuilder
     
     private function formatLine(string $marker, string $key, mixed $value): string
     {
-        $formattedValue = $this->formatValue($value);
-        return "  {$marker} {$key}: {$formattedValue}";
+        return "  $marker $key: {$this->formatValue($value)}";
     }
     
     private function formatValue(mixed $value): string
