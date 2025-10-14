@@ -4,6 +4,9 @@
     "type": "project",
     "license": "mit",
     "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
         "psr-4": {
             "Hexlet\\Code\\": "src/"
         }

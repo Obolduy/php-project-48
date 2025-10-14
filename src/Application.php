@@ -13,7 +13,7 @@ class Application
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->differ = new Differ(new Parser());
+        $this->differ = new Differ(new Parser(), new DiffBuilder());
     }
 
     public function run(): int
@@ -48,10 +48,8 @@ class Application
     private function handleDiff(string $file1, string $file2): int
     {
         try {
-            $result = $this->differ->genDiff($file1, $file2);
-            
-            Printer::print($result->file1, 1);
-            Printer::print($result->file2, 2);
+            $diff = $this->differ->generate($file1, $file2);
+            echo $diff . PHP_EOL;
 
             return 0;
         } catch (Exception $e) {
