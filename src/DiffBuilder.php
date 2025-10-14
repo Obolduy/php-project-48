@@ -15,28 +15,37 @@ class DiffBuilder
         $lines = ['{'];
         
         foreach ($allKeys as $key) {
-            $inFirst = array_key_exists($key, $data1);
-            $inSecond = array_key_exists($key, $data2);
-            
-            if ($inFirst && $inSecond) {
-                if ($data1[$key] === $data2[$key]) {
-                    $lines[] = $this->formatLine(' ', $key, $data1[$key]);
-                } else {
-                    $lines[] = $this->formatLine('-', $key, $data1[$key]);
-                    $lines[] = $this->formatLine('+', $key, $data2[$key]);
-                }
-            } elseif ($inFirst) {
-                $lines[] = $this->formatLine('-', $key, $data1[$key]);
-            } else {
-                $lines[] = $this->formatLine('+', $key, $data2[$key]);
-            }
+            $lines = array_merge($lines, $this->handleLine($key, $data1, $data2));
         }
         
         $lines[] = '}';
         
         return implode("\n", $lines);
     }
-    
+
+    private function handleLine(string $key, array $data1, array $data2): array
+    {
+        $inFirst = array_key_exists($key, $data1);
+        $inSecond = array_key_exists($key, $data2);
+
+        $line = [];
+
+        if ($inFirst && $inSecond) {
+            if ($data1[$key] === $data2[$key]) {
+                $line[] = $this->formatLine(' ', $key, $data1[$key]);
+            } else {
+                $line[] = $this->formatLine('-', $key, $data1[$key]);
+                $line[] = $this->formatLine('+', $key, $data2[$key]);
+            }
+        } elseif ($inFirst) {
+            $line[] = $this->formatLine('-', $key, $data1[$key]);
+        } else {
+            $line[] = $this->formatLine('+', $key, $data2[$key]);
+        }
+
+        return $line;
+    }
+
     private function formatLine(string $marker, string $key, mixed $value): string
     {
         return "  $marker $key: {$this->formatValue($value)}";
