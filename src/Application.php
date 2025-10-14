@@ -8,6 +8,7 @@ use Exception;
 class Application
 {
     private array $config;
+
     private Differ $differ;
 
     public function __construct(array $config)

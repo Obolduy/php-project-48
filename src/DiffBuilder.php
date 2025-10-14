@@ -10,7 +10,7 @@ class DiffBuilder
     {
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
         
-        $allKeys = sortBy($allKeys, fn($key) => $key);
+        $allKeys = sortBy($allKeys, fn ($key) => $key);
         
         $lines = ['{'];
         

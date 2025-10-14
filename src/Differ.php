@@ -7,6 +7,7 @@ use Exception;
 class Differ
 {
     private Parser $parser;
+
     private DiffBuilder $diffBuilder;
 
     public function __construct(Parser $parser, DiffBuilder $diffBuilder)
