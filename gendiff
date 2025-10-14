@@ -1,23 +1,8 @@
 #!/usr/bin/env php
 <?php
+
 require_once __DIR__ . '/vendor/autoload.php';
 
-$doc = <<<DOC
-Generate diff
+use Hexlet\Code\Cli;
 
-Usage:
-  gendiff (-h|--help)
-  gendiff (-v|--version)
-  gendiff [--format <fmt>] <firstFile> <secondFile>
-
-Options:
-  -h --help                     Show this screen
-  -v --version                  Show version
-  --format <fmt>                Report format [default: stylish]
-DOC;
-
-$arguments = Docopt::handle($doc);
-
-if ($arguments['--help']) {
-    echo $doc . PHP_EOL;
-}
+Cli::run();
