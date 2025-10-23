@@ -14,5 +14,9 @@
     "minimum-stability": "dev",
     "require": {
         "docopt/docopt": "dev-master"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "4.x-dev",
+        "phpunit/phpunit": "^13.0@dev"
     }
 }
