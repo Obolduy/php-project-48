@@ -176,5 +176,87 @@ DIFF;
 
         $this->assertEquals($expected, trim($result));
     }
+
+    public function testGenDiffWithFlatYamlFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1.yml';
+        $file2 = $this->fixturesPath . '/file2.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_diff.txt'));
+
+        $actual = genDiff($file1, $file2);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testDifferWithYamlFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1.yml';
+        $file2 = $this->fixturesPath . '/file2.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_diff.txt'));
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($file1, $file2);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testDifferWithIdenticalYamlFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1.yml';
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($file1, $file1);
+
+        $expected = <<<DIFF
+{
+    follow: false
+    host: hexlet.io
+    proxy: 123.234.53.22
+    timeout: 50
+}
+DIFF;
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testParserWithInvalidYaml(): void
+    {
+        $invalidYamlFile = $this->fixturesPath . '/invalid.yml';
+        file_put_contents($invalidYamlFile, "invalid:\n  yaml: [\n  unclosed");
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid YAML');
+
+        $parser = new Parser();
+        $parser->parseFile($invalidYamlFile);
+
+        unlink($invalidYamlFile);
+    }
+
+    public function testParserWithMixedFormats(): void
+    {
+        $jsonFile = $this->fixturesPath . '/file1.json';
+        $yamlFile = $this->fixturesPath . '/file1.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_diff.txt'));
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($jsonFile, $this->fixturesPath . '/file2.yml');
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testParserWithUnsupportedFormat(): void
+    {
+        $unsupportedFile = $this->fixturesPath . '/file.txt';
+        file_put_contents($unsupportedFile, "some text");
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Unsupported file format');
+
+        $parser = new Parser();
+        $parser->parseFile($unsupportedFile);
+
+        unlink($unsupportedFile);
+    }
 }
 

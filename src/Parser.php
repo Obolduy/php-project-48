@@ -3,9 +3,17 @@
 namespace Hexlet\Code;
 
 use Exception;
+use Hexlet\Code\Parsers\ParserFactory;
 
 class Parser
 {
+    private ParserFactory $parserFactory;
+
+    public function __construct(?ParserFactory $parserFactory = null)
+    {
+        $this->parserFactory = $parserFactory ?? new ParserFactory();
+    }
+
     /**
      * @throws Exception
      */
@@ -17,13 +25,14 @@ class Parser
             throw new Exception("File not found: $pathToFile");
         }
 
-        $data = json_decode(file_get_contents($absolutePath), true);
+        $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
+        $content = file_get_contents($absolutePath);
 
-        if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception("Invalid JSON in file: $pathToFile");
+        try {
+            return $this->parserFactory->getParser($extension)->parse($content);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage() . " in file: $pathToFile");
         }
-
-        return $data;
     }
 
     private function getRealPath(string $path): string
