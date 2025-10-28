@@ -11,6 +11,11 @@
             "Hexlet\\Code\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Hexlet\\Code\\Tests\\": "tests/"
+        }
+    },
     "minimum-stability": "dev",
     "require": {
         "docopt/docopt": "dev-master"

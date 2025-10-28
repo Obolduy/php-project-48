@@ -41,4 +41,3 @@ class Parser
         return $realPath;
     }
 }
-

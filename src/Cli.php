@@ -15,4 +15,3 @@ class Cli
         exit($exitCode);
     }
 }
-

@@ -2,24 +2,22 @@
 
 namespace Hexlet\Code;
 
-use function Funct\Collection\sortBy;
-
 class DiffBuilder
 {
     public function build(array $data1, array $data2): string
     {
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-        
-        $allKeys = sortBy($allKeys, fn ($key) => $key);
-        
+
+        sort($allKeys);
+
         $lines = ['{'];
-        
+
         foreach ($allKeys as $key) {
             $lines = array_merge($lines, $this->handleLine($key, $data1, $data2));
         }
-        
+
         $lines[] = '}';
-        
+
         return implode("\n", $lines);
     }
 
@@ -50,23 +48,21 @@ class DiffBuilder
     {
         return "  $marker $key: {$this->formatValue($value)}";
     }
-    
+
     private function formatValue(mixed $value): string
     {
         if (is_bool($value)) {
             return $value ? 'true' : 'false';
         }
-        
+
         if (is_null($value)) {
             return 'null';
         }
-        
+
         if (is_string($value)) {
             return $value;
         }
-        
+
         return (string) $value;
     }
 }
-
-

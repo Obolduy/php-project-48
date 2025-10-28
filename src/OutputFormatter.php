@@ -19,4 +19,3 @@ class OutputFormatter
         echo "Error: $message" . PHP_EOL;
     }
 }
-
