@@ -4,6 +4,7 @@ namespace Hexlet\Code;
 
 use Docopt;
 use Exception;
+use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 
 class Application
 {
@@ -29,6 +30,9 @@ class Application
             return $this->handleVersion();
         }
 
+        $formatString = $arguments['--format'] ?? OutputFormatEnum::STYLISH->value;
+        $this->config['format'] = OutputFormatEnum::tryFrom($formatString) ?? OutputFormatEnum::STYLISH;
+
         return $this->handleDiff($arguments['<firstFile>'], $arguments['<secondFile>']);
     }
 
@@ -49,7 +53,10 @@ class Application
     private function handleDiff(string $file1, string $file2): int
     {
         try {
-            $diff = $this->differ->generate($file1, $file2);
+            $format = $this->config['format'] ?? OutputFormatEnum::STYLISH;
+
+            $diff = $this->differ->generate($file1, $file2, $format);
+
             echo $diff . PHP_EOL;
 
             return 0;

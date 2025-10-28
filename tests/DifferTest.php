@@ -2,11 +2,13 @@
 
 namespace Hexlet\Code\Tests;
 
-use PHPUnit\Framework\TestCase;
-use Hexlet\Code\Differ;
-use Hexlet\Code\Parser;
 use Hexlet\Code\DiffBuilder;
-
+use Hexlet\Code\Differ;
+use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Nodes\DTOs\DiffNode;
+use Hexlet\Code\Nodes\Enums\DiffNodeTypeEnum;
+use Hexlet\Code\Parser;
+use PHPUnit\Framework\TestCase;
 use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
@@ -89,17 +91,11 @@ DIFF;
         $data2 = ['verbose' => false, 'enabled' => false];
 
         $diffBuilder = new DiffBuilder();
-        $result = $diffBuilder->build($data1, $data2);
+        $tree = $diffBuilder->build($data1, $data2);
 
-        $expected = <<<DIFF
-{
-    enabled: false
-  - verbose: true
-  + verbose: false
-}
-DIFF;
-
-        $this->assertEquals($expected, trim($result));
+        $this->assertIsArray($tree);
+        $this->assertCount(2, $tree);
+        $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
     }
 
     public function testDiffBuilderWithNullValues(): void
@@ -108,16 +104,12 @@ DIFF;
         $data2 = ['value' => 'something'];
 
         $diffBuilder = new DiffBuilder();
-        $result = $diffBuilder->build($data1, $data2);
+        $tree = $diffBuilder->build($data1, $data2);
 
-        $expected = <<<DIFF
-{
-  - value: null
-  + value: something
-}
-DIFF;
-
-        $this->assertEquals($expected, trim($result));
+        $this->assertIsArray($tree);
+        $this->assertCount(1, $tree);
+        $this->assertInstanceOf(DiffNode::class, $tree[0]);
+        $this->assertEquals(DiffNodeTypeEnum::CHANGED, $tree[0]->type);
     }
 
     public function testDiffBuilderWithNumericValues(): void
@@ -126,17 +118,11 @@ DIFF;
         $data2 = ['timeout' => 20, 'port' => 8080];
 
         $diffBuilder = new DiffBuilder();
-        $result = $diffBuilder->build($data1, $data2);
+        $tree = $diffBuilder->build($data1, $data2);
 
-        $expected = <<<DIFF
-{
-    port: 8080
-  - timeout: 50
-  + timeout: 20
-}
-DIFF;
-
-        $this->assertEquals($expected, trim($result));
+        $this->assertIsArray($tree);
+        $this->assertCount(2, $tree);
+        $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
     }
 
     public function testDiffBuilderWithAddedKeys(): void
@@ -145,17 +131,11 @@ DIFF;
         $data2 = ['host' => 'hexlet.io', 'verbose' => true, 'timeout' => 50];
 
         $diffBuilder = new DiffBuilder();
-        $result = $diffBuilder->build($data1, $data2);
+        $tree = $diffBuilder->build($data1, $data2);
 
-        $expected = <<<DIFF
-{
-    host: hexlet.io
-  + timeout: 50
-  + verbose: true
-}
-DIFF;
-
-        $this->assertEquals($expected, trim($result));
+        $this->assertIsArray($tree);
+        $this->assertCount(3, $tree);
+        $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
     }
 
     public function testDiffBuilderWithRemovedKeys(): void
@@ -164,17 +144,11 @@ DIFF;
         $data2 = ['host' => 'hexlet.io'];
 
         $diffBuilder = new DiffBuilder();
-        $result = $diffBuilder->build($data1, $data2);
+        $tree = $diffBuilder->build($data1, $data2);
 
-        $expected = <<<DIFF
-{
-    host: hexlet.io
-  - timeout: 50
-  - verbose: true
-}
-DIFF;
-
-        $this->assertEquals($expected, trim($result));
+        $this->assertIsArray($tree);
+        $this->assertCount(3, $tree);
+        $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
     }
 
     public function testGenDiffWithFlatYamlFiles(): void
@@ -258,5 +232,101 @@ DIFF;
 
         unlink($unsupportedFile);
     }
-}
 
+    // Tests for nested structures
+    public function testGenDiffWithNestedJsonFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_stylish.txt'));
+
+        $actual = genDiff($file1, $file2);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithNestedYamlFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.yml';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_stylish.txt'));
+
+        $actual = genDiff($file1, $file2);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithMixedNestedFormats(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_stylish.txt'));
+
+        $actual = genDiff($file1, $file2);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testDifferWithIdenticalNestedFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($file1, $file1);
+
+        // All keys should be marked as unchanged
+        $this->assertStringContainsString('common:', $actual);
+        $this->assertStringContainsString('group1:', $actual);
+        $this->assertStringContainsString('group2:', $actual);
+    }
+
+    public function testDiffBuilderWithNestedStructures(): void
+    {
+        $data1 = [
+            'common' => [
+                'setting1' => 'Value 1',
+                'setting2' => 200
+            ],
+            'group1' => [
+                'baz' => 'bas'
+            ]
+        ];
+        
+        $data2 = [
+            'common' => [
+                'setting1' => 'Value 1',
+                'setting3' => null
+            ],
+            'group1' => [
+                'baz' => 'bars'
+            ]
+        ];
+
+        $diffBuilder = new DiffBuilder();
+        $tree = $diffBuilder->build($data1, $data2);
+
+        $this->assertIsArray($tree);
+        $this->assertCount(2, $tree);
+        $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
+        
+        // Check that 'common' is nested
+        $commonNode = array_filter($tree, fn(DiffNode $node) => $node->key === 'common');
+        $this->assertNotEmpty($commonNode);
+        $commonNode = array_values($commonNode)[0];
+        $this->assertInstanceOf(DiffNode::class, $commonNode);
+        $this->assertEquals(DiffNodeTypeEnum::NESTED, $commonNode->type);
+        $this->assertIsArray($commonNode->children);
+        $this->assertNotEmpty($commonNode->children);
+    }
+
+    public function testGenDiffWithStylishFormat(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_stylish.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::STYLISH);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+}

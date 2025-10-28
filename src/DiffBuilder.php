@@ -2,67 +2,62 @@
 
 namespace Hexlet\Code;
 
+use Hexlet\Code\Nodes\DTOs\DiffNode;
+use Hexlet\Code\Nodes\Factories\DiffNodeFactory;
+
 class DiffBuilder
 {
-    public function build(array $data1, array $data2): string
+    public function build(array $data1, array $data2): array
     {
-        $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-
-        sort($allKeys);
-
-        $lines = ['{'];
-
-        foreach ($allKeys as $key) {
-            $lines = array_merge($lines, $this->handleLine($key, $data1, $data2));
-        }
-
-        $lines[] = '}';
-
-        return implode("\n", $lines);
+        return $this->buildTree($data1, $data2);
     }
 
-    private function handleLine(string $key, array $data1, array $data2): array
+    /**
+     * @return array<DiffNode>
+     */
+    private function buildTree(array $data1, array $data2): array
+    {
+        $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
+        sort($allKeys);
+
+        $tree = [];
+
+        foreach ($allKeys as $key) {
+            $tree[] = $this->buildNode($key, $data1, $data2);
+        }
+
+        return $tree;
+    }
+
+    private function buildNode(string $key, array $data1, array $data2): DiffNode
     {
         $inFirst = array_key_exists($key, $data1);
         $inSecond = array_key_exists($key, $data2);
 
-        $line = [];
-
-        if ($inFirst && $inSecond) {
-            if ($data1[$key] === $data2[$key]) {
-                $line[] = $this->formatLine(' ', $key, $data1[$key]);
-            } else {
-                $line[] = $this->formatLine('-', $key, $data1[$key]);
-                $line[] = $this->formatLine('+', $key, $data2[$key]);
-            }
-        } elseif ($inFirst) {
-            $line[] = $this->formatLine('-', $key, $data1[$key]);
-        } else {
-            $line[] = $this->formatLine('+', $key, $data2[$key]);
+        if (!$inFirst) {
+            return DiffNodeFactory::createAdded($key, $data2[$key]);
         }
 
-        return $line;
+        if (!$inSecond) {
+            return DiffNodeFactory::createRemoved($key, $data1[$key]);
+        }
+
+        $value1 = $data1[$key];
+        $value2 = $data2[$key];
+
+        if ($this->isAssociativeArray($value1) && $this->isAssociativeArray($value2)) {
+            return DiffNodeFactory::createNested($key, $this->buildTree($value1, $value2));
+        }
+
+        if ($value1 === $value2) {
+            return DiffNodeFactory::createUnchanged($key, $value1);
+        }
+
+        return DiffNodeFactory::createChanged($key, $value1, $value2);
     }
 
-    private function formatLine(string $marker, string $key, mixed $value): string
+    private function isAssociativeArray(mixed $value): bool
     {
-        return "  $marker $key: {$this->formatValue($value)}";
-    }
-
-    private function formatValue(mixed $value): string
-    {
-        if (is_bool($value)) {
-            return $value ? 'true' : 'false';
-        }
-
-        if (is_null($value)) {
-            return 'null';
-        }
-
-        if (is_string($value)) {
-            return $value;
-        }
-
-        return (string) $value;
+        return is_array($value) && !empty($value) && array_keys($value) !== range(0, count($value) - 1);
     }
 }
