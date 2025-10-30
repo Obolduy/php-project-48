@@ -1,11 +1,12 @@
 <?php
 
-namespace Hexlet\Code;
+namespace Hexlet\Code\Differ;
 
 use Exception;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 use Hexlet\Code\Formatters\PlainFormatter;
 use Hexlet\Code\Formatters\StylishFormatter;
+use Hexlet\Code\Parsers\Parser;
 
 class Differ
 {

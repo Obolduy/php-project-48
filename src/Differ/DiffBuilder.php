@@ -1,6 +1,6 @@
 <?php
 
-namespace Hexlet\Code;
+namespace Hexlet\Code\Differ;
 
 use Hexlet\Code\Nodes\DTOs\DiffNode;
 use Hexlet\Code\Nodes\Factories\DiffNodeFactory;

@@ -3,10 +3,10 @@
 namespace Differ\Differ;
 
 use Exception;
-use Hexlet\Code\DiffBuilder;
-use Hexlet\Code\Differ;
+use Hexlet\Code\Differ\DiffBuilder;
+use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
-use Hexlet\Code\Parser;
+use Hexlet\Code\Parsers\Parser;
 
 function genDiff(
     string $pathToFile1,

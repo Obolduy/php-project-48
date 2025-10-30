@@ -1,9 +1,8 @@
 <?php
 
-namespace Hexlet\Code;
+namespace Hexlet\Code\Parsers;
 
 use Exception;
-use Hexlet\Code\Parsers\ParserFactory;
 
 class Parser
 {

@@ -2,14 +2,13 @@
 
 namespace Hexlet\Code\Tests;
 
-use Hexlet\Code\DiffBuilder;
-use Hexlet\Code\Differ;
+use Hexlet\Code\Differ\DiffBuilder;
+use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 use Hexlet\Code\Nodes\DTOs\DiffNode;
 use Hexlet\Code\Nodes\Enums\DiffNodeTypeEnum;
-use Hexlet\Code\Parser;
+use Hexlet\Code\Parsers\Parser;
 use PHPUnit\Framework\TestCase;
-
 use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
