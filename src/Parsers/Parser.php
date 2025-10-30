@@ -42,10 +42,6 @@ class Parser
 
         $realPath = realpath($path);
 
-        if ($realPath === false) {
-            return getcwd() . '/' . $path;
-        }
-
-        return $realPath;
+        return $realPath === false ? getcwd() . '/' . $path : $realPath;
     }
 }
