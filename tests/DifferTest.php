@@ -370,4 +370,63 @@ DIFF;
 
         $this->assertEquals($expected, trim($actual));
     }
+
+    public function testGenDiffWithJsonFormat(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_json.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::JSON);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithJsonFormatYaml(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.yml';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_json.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::JSON);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithJsonFormatMixedFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_json.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::JSON);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testDifferWithJsonFormat(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_json.txt'));
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($file1, $file2, OutputFormatEnum::JSON);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testJsonFormatterWithBooleanAndNullValues(): void
+    {
+        $file1 = $this->fixturesPath . '/file1.json';
+        $file2 = $this->fixturesPath . '/file2.json';
+
+        $differ = new Differ(new Parser(), new DiffBuilder());
+        $actual = $differ->generate($file1, $file2, OutputFormatEnum::JSON);
+
+        $this->assertJson($actual);
+        $decoded = json_decode($actual, true);
+        $this->assertIsArray($decoded);
+        $this->assertNotEmpty($decoded);
+    }
 }

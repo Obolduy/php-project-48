@@ -6,4 +6,5 @@ enum OutputFormatEnum: string
 {
     case STYLISH = 'stylish';
     case PLAIN = 'plain';
+    case JSON = 'json';
 }

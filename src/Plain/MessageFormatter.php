@@ -37,4 +37,3 @@ readonly class MessageFormatter
                $this->valueFormatter->format($newValue);
     }
 }
-

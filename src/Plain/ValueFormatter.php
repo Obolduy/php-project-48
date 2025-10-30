@@ -25,4 +25,3 @@ readonly class ValueFormatter
         return (string) $value;
     }
 }
-

@@ -48,4 +48,3 @@ readonly class NodeFormatter
         return $lines;
     }
 }
-

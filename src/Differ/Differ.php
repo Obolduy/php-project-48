@@ -4,6 +4,7 @@ namespace Hexlet\Code\Differ;
 
 use Exception;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Formatters\JsonFormatter;
 use Hexlet\Code\Formatters\PlainFormatter;
 use Hexlet\Code\Formatters\StylishFormatter;
 use Hexlet\Code\Parsers\Parser;
@@ -42,6 +43,7 @@ class Differ
         return match ($format) {
             OutputFormatEnum::STYLISH => new StylishFormatter()->format($tree),
             OutputFormatEnum::PLAIN => new PlainFormatter()->format($tree),
+            OutputFormatEnum::JSON => new JsonFormatter()->format($tree),
         };
     }
 }
