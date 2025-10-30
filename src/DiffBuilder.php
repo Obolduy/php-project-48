@@ -32,11 +32,12 @@ class DiffBuilder
     private function buildNode(string $key, array $data1, array $data2): DiffNode
     {
         $inFirst = array_key_exists($key, $data1);
-        $inSecond = array_key_exists($key, $data2);
 
         if (!$inFirst) {
             return DiffNodeFactory::createAdded($key, $data2[$key]);
         }
+
+        $inSecond = array_key_exists($key, $data2);
 
         if (!$inSecond) {
             return DiffNodeFactory::createRemoved($key, $data1[$key]);

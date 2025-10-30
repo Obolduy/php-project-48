@@ -4,6 +4,7 @@ namespace Hexlet\Code;
 
 use Exception;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Formatters\PlainFormatter;
 use Hexlet\Code\Formatters\StylishFormatter;
 
 class Differ
@@ -25,10 +26,9 @@ class Differ
         string $pathToFile2,
         OutputFormatEnum $format = OutputFormatEnum::STYLISH
     ): string {
-        $data1 = $this->parser->parseFile($pathToFile1);
-        $data2 = $this->parser->parseFile($pathToFile2);
-
-        $tree = $this->diffBuilder->build($data1, $data2);
+        $tree = $this
+            ->diffBuilder
+            ->build($this->parser->parseFile($pathToFile1), $this->parser->parseFile($pathToFile2));
 
         return $this->format($tree, $format);
     }
@@ -36,16 +36,11 @@ class Differ
     /**
      * @throws Exception
      */
-    private function format(array $tree, OutputFormatEnum|string $format): string
+    private function format(array $tree, OutputFormatEnum $format): string
     {
-        $outputFormat = is_string($format) ? OutputFormatEnum::tryFrom($format) : $format;
-
-        if ($outputFormat === null) {
-            throw new Exception("Unsupported format: $format");
-        }
-
-        return match ($outputFormat) {
+        return match ($format) {
             OutputFormatEnum::STYLISH => new StylishFormatter()->format($tree),
+            OutputFormatEnum::PLAIN => new PlainFormatter()->format($tree),
         };
     }
 }

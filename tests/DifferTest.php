@@ -9,6 +9,7 @@ use Hexlet\Code\Nodes\DTOs\DiffNode;
 use Hexlet\Code\Nodes\Enums\DiffNodeTypeEnum;
 use Hexlet\Code\Parser;
 use PHPUnit\Framework\TestCase;
+
 use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase
@@ -233,7 +234,6 @@ DIFF;
         unlink($unsupportedFile);
     }
 
-    // Tests for nested structures
     public function testGenDiffWithNestedJsonFiles(): void
     {
         $file1 = $this->fixturesPath . '/file1_nested.json';
@@ -274,7 +274,6 @@ DIFF;
         $differ = new Differ(new Parser(), new DiffBuilder());
         $actual = $differ->generate($file1, $file1);
 
-        // All keys should be marked as unchanged
         $this->assertStringContainsString('common:', $actual);
         $this->assertStringContainsString('group1:', $actual);
         $this->assertStringContainsString('group2:', $actual);
@@ -291,7 +290,7 @@ DIFF;
                 'baz' => 'bas'
             ]
         ];
-        
+
         $data2 = [
             'common' => [
                 'setting1' => 'Value 1',
@@ -308,8 +307,7 @@ DIFF;
         $this->assertIsArray($tree);
         $this->assertCount(2, $tree);
         $this->assertContainsOnlyInstancesOf(DiffNode::class, $tree);
-        
-        // Check that 'common' is nested
+
         $commonNode = array_filter($tree, fn(DiffNode $node) => $node->key === 'common');
         $this->assertNotEmpty($commonNode);
         $commonNode = array_values($commonNode)[0];
@@ -326,6 +324,50 @@ DIFF;
         $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_stylish.txt'));
 
         $actual = genDiff($file1, $file2, OutputFormatEnum::STYLISH);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithPlainFormat(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_plain.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::PLAIN);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithPlainFormatYaml(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.yml';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_plain.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::PLAIN);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithPlainFormatEnum(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_plain.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::PLAIN);
+
+        $this->assertEquals($expected, trim($actual));
+    }
+
+    public function testGenDiffWithPlainFormatMixedFiles(): void
+    {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.yml';
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_nested_plain.txt'));
+
+        $actual = genDiff($file1, $file2, OutputFormatEnum::PLAIN);
 
         $this->assertEquals($expected, trim($actual));
     }

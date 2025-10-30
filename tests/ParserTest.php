@@ -91,10 +91,8 @@ class ParserTest extends TestCase
     {
         $factory = new ParserFactory();
 
-        // Register JsonParser for .txt extension
         $factory->registerParser('txt', JsonParser::class);
 
-        // Verify custom parser is registered
         $parser = $factory->getParser('txt');
         $this->assertInstanceOf(JsonParser::class, $parser);
     }
@@ -103,7 +101,6 @@ class ParserTest extends TestCase
     {
         $factory = new ParserFactory();
 
-        // Get same parser twice - should return same instance
         $parser1 = $factory->getParser('json');
         $parser2 = $factory->getParser('json');
 
@@ -123,4 +120,3 @@ class ParserTest extends TestCase
         $this->assertInstanceOf(YamlParser::class, $parser3);
     }
 }
-
