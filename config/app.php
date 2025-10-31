@@ -17,4 +17,3 @@ Options:
   --format <fmt>                Report format [default: stylish]
 DOC
 ];
-
