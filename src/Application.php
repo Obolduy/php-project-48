@@ -26,11 +26,11 @@ class Application
     {
         $arguments = Docopt::handle($this->config['doc']);
 
-        if ($arguments['--help']) {
+        if ($arguments['--help'] === true) {
             return $this->handleHelp();
         }
 
-        if ($arguments['--version']) {
+        if ($arguments['--version'] === true) {
             return $this->handleVersion();
         }
 

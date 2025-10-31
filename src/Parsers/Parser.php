@@ -27,6 +27,10 @@ class Parser
         $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
         $content = file_get_contents($absolutePath);
 
+        if ($content === false) {
+            throw new Exception("Failed to read file: $pathToFile");
+        }
+
         try {
             return $this->parserFactory->getParser($extension)->parse($content);
         } catch (Exception $e) {

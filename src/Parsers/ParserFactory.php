@@ -14,11 +14,16 @@ class ParserFactory
     /**
      * @var array<string, class-string<ParserInterface>>
      */
-    private array $parserMap = [
-        'json' => JsonParser::class,
-        'yml' => YamlParser::class,
-        'yaml' => YamlParser::class,
-    ];
+    private array $parserMap;
+
+    public function __construct()
+    {
+        $this->parserMap = [
+            'json' => JsonParser::class,
+            'yml' => YamlParser::class,
+            'yaml' => YamlParser::class,
+        ];
+    }
 
     /**
      * @throws Exception
@@ -38,6 +43,9 @@ class ParserFactory
         return $this->parsers[$normalizedExtension];
     }
 
+    /**
+     * @param class-string<ParserInterface> $parserClass
+     */
     public function registerParser(string $extension, string $parserClass): void
     {
         $normalizedExtension = strtolower($extension);

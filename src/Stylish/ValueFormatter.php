@@ -28,7 +28,7 @@ readonly class ValueFormatter
 
     private function formatArray(array $array, int $depth): string
     {
-        if (empty($array)) {
+        if ($array === []) {
             return ValueRepresentation::EMPTY_OBJECT->value;
         }
 
