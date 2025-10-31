@@ -6,7 +6,7 @@ class Cli
 {
     public static function run(): void
     {
-        $config = require __DIR__ . '/../config/app.php';
+        $config = require_once __DIR__ . '/../config/app.php';
 
         $app = new Application($config);
 
