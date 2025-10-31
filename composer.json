@@ -17,6 +17,7 @@
         }
     },
     "minimum-stability": "dev",
+    "prefer-stable": false,
     "require": {
         "docopt/docopt": "dev-master",
         "symfony/yaml": "^7.1"

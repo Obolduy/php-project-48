@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68e8efc6d7d8e9f8a52ac4664729ea3b",
+    "content-hash": "5e879f46b60dbe8f24f4ce3a2e5e038d",
     "packages": [
         {
             "name": "docopt/docopt",
@@ -920,12 +920,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a96c61dfc29d9827155ee9771454967bd57bef5d"
+                "reference": "79fc96ed5eaf384d77a4deb2b1b2a02518666d18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a96c61dfc29d9827155ee9771454967bd57bef5d",
-                "reference": "a96c61dfc29d9827155ee9771454967bd57bef5d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/79fc96ed5eaf384d77a4deb2b1b2a02518666d18",
+                "reference": "79fc96ed5eaf384d77a4deb2b1b2a02518666d18",
                 "shasum": ""
             },
             "require": {
@@ -1018,7 +1018,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-10-22T06:18:11+00:00"
+            "time": "2025-10-30T08:42:41+00:00"
         },
         {
             "name": "sebastian/cli-parser",
