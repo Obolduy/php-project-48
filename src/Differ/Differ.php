@@ -41,9 +41,9 @@ class Differ
     private function format(array $tree, OutputFormatEnum $format): string
     {
         return match ($format) {
-            OutputFormatEnum::STYLISH => new StylishFormatter()->format($tree),
-            OutputFormatEnum::PLAIN => new PlainFormatter()->format($tree),
-            OutputFormatEnum::JSON => new JsonFormatter()->format($tree),
+            OutputFormatEnum::STYLISH => (new StylishFormatter())->format($tree),
+            OutputFormatEnum::PLAIN => (new PlainFormatter())->format($tree),
+            OutputFormatEnum::JSON => (new JsonFormatter())->format($tree),
         };
     }
 }

@@ -3,6 +3,9 @@
     "description": "gendiff",
     "type": "project",
     "license": "mit",
+    "bin": [
+        "bin/gendiff"
+    ],
     "autoload": {
         "files": [
             "src/functions.php"
