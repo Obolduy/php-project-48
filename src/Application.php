@@ -8,7 +8,7 @@ use Hexlet\Code\Differ\DiffBuilder;
 use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 use Hexlet\Code\Formatters\OutputFormatter;
-use Hexlet\Code\Parsers\Parser;
+use Hexlet\Code\Parsers\Common\Parser;
 
 class Application
 {

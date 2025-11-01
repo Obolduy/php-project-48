@@ -2,10 +2,10 @@
 
 namespace Hexlet\Code\Tests;
 
-use PHPUnit\Framework\TestCase;
+use Hexlet\Code\Parsers\Common\ParserFactory;
 use Hexlet\Code\Parsers\JsonParser;
 use Hexlet\Code\Parsers\YamlParser;
-use Hexlet\Code\Parsers\ParserFactory;
+use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {

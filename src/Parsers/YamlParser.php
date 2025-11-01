@@ -2,13 +2,13 @@
 
 namespace Hexlet\Code\Parsers;
 
-use Exception;
+use Hexlet\Code\Parsers\Exceptions\YamlParserException;
 use Symfony\Component\Yaml\Yaml;
 
 class YamlParser implements ParserInterface
 {
     /**
-     * @throws Exception
+     * @throws YamlParserException
      */
     public function parse(string $content): array
     {
@@ -17,18 +17,18 @@ class YamlParser implements ParserInterface
             $jsonString = json_encode($yamlData);
 
             if ($jsonString === false) {
-                throw new Exception("Failed to encode YAML data to JSON: " . json_last_error_msg());
+                throw new YamlParserException("Failed to encode YAML data to JSON: " . json_last_error_msg());
             }
 
             $result = json_decode($jsonString, true);
 
             if (!is_array($result)) {
-                throw new Exception("Failed to decode JSON or result is not an array");
+                throw new YamlParserException("Failed to decode JSON or result is not an array");
             }
 
             return $result;
-        } catch (Exception $e) {
-            throw new Exception("Invalid YAML: " . $e->getMessage());
+        } catch (YamlParserException $e) {
+            throw new YamlParserException("Invalid YAML: " . $e->getMessage());
         }
     }
 }

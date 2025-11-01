@@ -7,9 +7,8 @@ use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 use Hexlet\Code\Nodes\DTOs\DiffNode;
 use Hexlet\Code\Nodes\Enums\DiffNodeTypeEnum;
-use Hexlet\Code\Parsers\Parser;
+use Hexlet\Code\Parsers\Common\Parser;
 use PHPUnit\Framework\TestCase;
-
 use function Differ\Differ\genDiff;
 
 class DifferTest extends TestCase

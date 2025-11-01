@@ -1,8 +1,9 @@
 <?php
 
-namespace Hexlet\Code\Parsers;
+namespace Hexlet\Code\Parsers\Common;
 
-use Exception;
+use Hexlet\Code\Parsers\Exceptions\AbstractParserException;
+use Hexlet\Code\Parsers\Exceptions\ParserException;
 
 class Parser
 {
@@ -14,27 +15,27 @@ class Parser
     }
 
     /**
-     * @throws Exception
+     * @throws AbstractParserException
      */
     public function parseFile(string $pathToFile): array
     {
         $absolutePath = $this->getRealPath($pathToFile);
 
         if (!file_exists($absolutePath)) {
-            throw new Exception("File not found: $pathToFile");
+            throw new ParserException("File not found: $pathToFile");
         }
 
         $extension = strtolower(pathinfo($absolutePath, PATHINFO_EXTENSION));
         $content = file_get_contents($absolutePath);
 
         if ($content === false) {
-            throw new Exception("Failed to read file: $pathToFile");
+            throw new ParserException("Failed to read file: $pathToFile");
         }
 
         try {
             return $this->parserFactory->getParser($extension)->parse($content);
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage() . " in file: $pathToFile");
+        } catch (ParserException $e) {
+            throw new ParserException($e->getMessage() . " in file: $pathToFile");
         }
     }
 

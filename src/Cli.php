@@ -4,10 +4,8 @@ namespace Hexlet\Code;
 
 class Cli
 {
-    public static function run(): void
+    public static function run(array $config): void
     {
-        $config = require_once __DIR__ . '/../config/app.php';
-
         $app = new Application($config);
 
         $exitCode = $app->run();

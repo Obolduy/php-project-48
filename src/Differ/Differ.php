@@ -7,7 +7,7 @@ use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
 use Hexlet\Code\Formatters\JsonFormatter;
 use Hexlet\Code\Formatters\PlainFormatter;
 use Hexlet\Code\Formatters\StylishFormatter;
-use Hexlet\Code\Parsers\Parser;
+use Hexlet\Code\Parsers\Common\Parser;
 
 class Differ
 {

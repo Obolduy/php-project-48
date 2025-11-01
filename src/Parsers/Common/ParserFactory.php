@@ -1,8 +1,11 @@
 <?php
 
-namespace Hexlet\Code\Parsers;
+namespace Hexlet\Code\Parsers\Common;
 
-use Exception;
+use Hexlet\Code\Parsers\Exceptions\ParserException;
+use Hexlet\Code\Parsers\JsonParser;
+use Hexlet\Code\Parsers\ParserInterface;
+use Hexlet\Code\Parsers\YamlParser;
 
 class ParserFactory
 {
@@ -26,14 +29,14 @@ class ParserFactory
     }
 
     /**
-     * @throws Exception
+     * @throws ParserException
      */
     public function getParser(string $extension): ParserInterface
     {
         $normalizedExtension = strtolower($extension);
 
         if (!isset($this->parserMap[$normalizedExtension])) {
-            throw new Exception("Unsupported file format: $extension");
+            throw new ParserException("Unsupported file format: $extension");
         }
 
         if (!isset($this->parsers[$normalizedExtension])) {
