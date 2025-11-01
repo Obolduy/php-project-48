@@ -6,8 +6,12 @@ use Exception;
 use Hexlet\Code\Differ\DiffBuilder;
 use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Formatters\FormatterFactory;
 use Hexlet\Code\Parsers\Common\Parser;
 
+/**
+ * @throws Exception
+ */
 function genDiff(
     string $pathToFile1,
     string $pathToFile2,
@@ -17,13 +21,7 @@ function genDiff(
         $format = OutputFormatEnum::tryFrom($format) ?? OutputFormatEnum::STYLISH;
     }
 
-    $differ = new Differ(new Parser(), new DiffBuilder());
+    $differ = new Differ(new Parser(), new DiffBuilder(), new FormatterFactory());
 
-    try {
-        $result = $differ->generate($pathToFile1, $pathToFile2, $format);
-    } catch (Exception $e) {
-        $result = $e->getMessage();
-    }
-
-    return $result;
+    return $differ->generate($pathToFile1, $pathToFile2, $format);
 }

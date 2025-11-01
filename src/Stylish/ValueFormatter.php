@@ -14,6 +14,7 @@ readonly class ValueFormatter
         return match (true) {
             is_bool($value) => $value ? ValueRepresentation::TRUE->value : ValueRepresentation::FALSE->value,
             is_null($value) => ValueRepresentation::NULL->value,
+            is_object($value) => $this->formatArray(get_object_vars($value), $depth),
             is_array($value) => $this->formatArray($value, $depth),
             default => (string) $value,
         };

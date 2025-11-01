@@ -20,13 +20,13 @@ class YamlParser implements ParserInterface
                 throw new YamlParserException("Failed to encode YAML data to JSON: " . json_last_error_msg());
             }
 
-            $result = json_decode($jsonString, true);
+            $result = json_decode($jsonString);
 
-            if (!is_array($result)) {
-                throw new YamlParserException("Failed to decode JSON or result is not an array");
+            if ($result === null) {
+                throw new YamlParserException("Failed to decode JSON");
             }
 
-            return $result;
+            return get_object_vars($result);
         } catch (\Exception $e) {
             throw new YamlParserException("Invalid YAML: " . $e->getMessage());
         }

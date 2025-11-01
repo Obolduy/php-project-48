@@ -7,6 +7,7 @@ use Exception;
 use Hexlet\Code\Differ\DiffBuilder;
 use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Formatters\FormatterFactory;
 use Hexlet\Code\Formatters\OutputFormatter;
 use Hexlet\Code\Parsers\Common\Parser;
 
@@ -19,7 +20,7 @@ class Application
     public function __construct(array $config)
     {
         $this->config = $config;
-        $this->differ = new Differ(new Parser(), new DiffBuilder());
+        $this->differ = new Differ(new Parser(), new DiffBuilder(), new FormatterFactory());
     }
 
     public function run(): int

@@ -8,7 +8,7 @@ use Hexlet\Code\Plain\NodeFormatter;
 use Hexlet\Code\Plain\PathBuilder;
 use Hexlet\Code\Plain\ValueFormatter;
 
-readonly class PlainFormatter
+readonly class PlainFormatter implements FormatterInterface
 {
     private NodeFormatter $nodeFormatter;
 

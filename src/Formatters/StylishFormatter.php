@@ -8,8 +8,10 @@ use Hexlet\Code\Stylish\NodeFormatter;
 use Hexlet\Code\Stylish\ValueFormatter;
 use Hexlet\Code\Stylish\ValueRepresentation;
 
-readonly class StylishFormatter
+readonly class StylishFormatter implements FormatterInterface
 {
+    private const int DEFAULT_DEPTH = 1;
+
     private NodeFormatter $nodeFormatter;
 
     public function __construct()
@@ -22,7 +24,15 @@ readonly class StylishFormatter
     /**
      * @param array<DiffNode> $tree
      */
-    public function format(array $tree, int $depth = 1): string
+    public function format(array $tree): string
+    {
+        return $this->formatWithDepth($tree, self::DEFAULT_DEPTH);
+    }
+
+    /**
+     * @param array<DiffNode> $tree
+     */
+    private function formatWithDepth(array $tree, int $depth = 1): string
     {
         return ValueRepresentation::OPEN_BRACE->value .
                ValueRepresentation::LINE_SEPARATOR->value .

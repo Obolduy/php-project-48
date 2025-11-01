@@ -2,86 +2,93 @@
 
 namespace Hexlet\Code\Tests;
 
+use Exception;
 use Hexlet\Code\Parsers\Common\ParserFactory;
 use Hexlet\Code\Parsers\JsonParser;
+use Hexlet\Code\Parsers\ParserInterface;
 use Hexlet\Code\Parsers\YamlParser;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {
-    public function testJsonParserParsesValidJson(): void
+    #[DataProvider('validParserDataProvider')]
+    public function testParserParsesValidInput(ParserInterface $parser, string $content, array $expected): void
     {
-        $parser = new JsonParser();
-        $json = '{"host": "hexlet.io", "timeout": 50}';
+        $result = $parser->parse($content);
 
-        $result = $parser->parse($json);
-
-        $this->assertEquals([
-            'host' => 'hexlet.io',
-            'timeout' => 50
-        ], $result);
+        $this->assertEquals($expected, $result);
     }
 
-    public function testJsonParserThrowsExceptionOnInvalidJson(): void
+    public static function validParserDataProvider(): array
     {
-        $parser = new JsonParser();
-        $invalidJson = '{invalid json}';
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid JSON');
-
-        $parser->parse($invalidJson);
+        return [
+            'json parser' => [
+                new JsonParser(),
+                '{"host": "hexlet.io", "timeout": 50}',
+                ['host' => 'hexlet.io', 'timeout' => 50]
+            ],
+            'yaml parser' => [
+                new YamlParser(),
+                "host: hexlet.io\ntimeout: 50",
+                ['host' => 'hexlet.io', 'timeout' => 50]
+            ]
+        ];
     }
 
-    public function testYamlParserParsesValidYaml(): void
-    {
-        $parser = new YamlParser();
-        $yaml = "host: hexlet.io\ntimeout: 50";
+    #[DataProvider('invalidParserDataProvider')]
+    public function testParserThrowsExceptionOnInvalidInput(
+        ParserInterface $parser,
+        string $content,
+        string $expectedMessage
+    ): void {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($expectedMessage);
 
-        $result = $parser->parse($yaml);
-
-        $this->assertEquals([
-            'host' => 'hexlet.io',
-            'timeout' => 50
-        ], $result);
+        $parser->parse($content);
     }
 
-    public function testYamlParserThrowsExceptionOnInvalidYaml(): void
+    public static function invalidParserDataProvider(): array
     {
-        $parser = new YamlParser();
-        $invalidYaml = "invalid:\n  yaml: [\n  unclosed";
-
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Invalid YAML');
-
-        $parser->parse($invalidYaml);
+        return [
+            'invalid json' => [
+                new JsonParser(),
+                '{invalid json}',
+                'Invalid JSON'
+            ],
+            'invalid yaml' => [
+                new YamlParser(),
+                "invalid:\n  yaml: [\n  unclosed",
+                'Invalid YAML'
+            ]
+        ];
     }
 
-    public function testParserFactoryReturnsJsonParser(): void
+    #[DataProvider('parserFactoryDataProvider')]
+    public function testParserFactoryReturnsCorrectParser(string $format, string $expectedClass): void
     {
         $factory = new ParserFactory();
+        $parser = $factory->getParser($format);
 
-        $parser = $factory->getParser('json');
-
-        $this->assertInstanceOf(JsonParser::class, $parser);
+        $this->assertInstanceOf($expectedClass, $parser);
     }
 
-    public function testParserFactoryReturnsYamlParser(): void
+    public static function parserFactoryDataProvider(): array
     {
-        $factory = new ParserFactory();
-
-        $parser1 = $factory->getParser('yml');
-        $parser2 = $factory->getParser('yaml');
-
-        $this->assertInstanceOf(YamlParser::class, $parser1);
-        $this->assertInstanceOf(YamlParser::class, $parser2);
+        return [
+            'json format' => ['json', JsonParser::class],
+            'yml format' => ['yml', YamlParser::class],
+            'yaml format' => ['yaml', YamlParser::class],
+            'JSON uppercase' => ['JSON', JsonParser::class],
+            'YML uppercase' => ['YML', YamlParser::class]
+        ];
     }
 
     public function testParserFactoryThrowsExceptionOnUnsupportedFormat(): void
     {
         $factory = new ParserFactory();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Unsupported file format');
 
         $factory->getParser('txt');
@@ -105,18 +112,5 @@ class ParserTest extends TestCase
         $parser2 = $factory->getParser('json');
 
         $this->assertSame($parser1, $parser2);
-    }
-
-    public function testParserFactoryCaseInsensitive(): void
-    {
-        $factory = new ParserFactory();
-
-        $parser1 = $factory->getParser('JSON');
-        $parser2 = $factory->getParser('json');
-        $parser3 = $factory->getParser('YML');
-
-        $this->assertInstanceOf(JsonParser::class, $parser1);
-        $this->assertInstanceOf(JsonParser::class, $parser2);
-        $this->assertInstanceOf(YamlParser::class, $parser3);
     }
 }

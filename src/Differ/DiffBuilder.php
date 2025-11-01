@@ -18,15 +18,27 @@ class DiffBuilder
     private function buildTree(array $data1, array $data2): array
     {
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-        sort($allKeys);
+        $sortedKeys = $this->getSortedKeys($allKeys);
 
         $tree = [];
 
-        foreach ($allKeys as $key) {
+        foreach ($sortedKeys as $key) {
             $tree[] = $this->buildNode($key, $data1, $data2);
         }
 
         return $tree;
+    }
+
+    /**
+     * @param array<string> $keys
+     * @return array<string>
+     */
+    private function getSortedKeys(array $keys): array
+    {
+        $sortedKeys = $keys;
+        sort($sortedKeys);
+
+        return $sortedKeys;
     }
 
     private function buildNode(string $key, array $data1, array $data2): DiffNode
@@ -37,19 +49,27 @@ class DiffBuilder
         $value1 = $inFirst ? $data1[$key] : null;
         $value2 = $inSecond ? $data2[$key] : null;
 
-        $isAssociativeArray = $this->isAssociativeArray($value1) && $this->isAssociativeArray($value2);
+        $isNested = $this->isNested($value1, $value2);
 
         return match (true) {
             !$inFirst => DiffNodeFactory::createAdded($key, $value2),
             !$inSecond => DiffNodeFactory::createRemoved($key, $value1),
-            $isAssociativeArray => DiffNodeFactory::createNested($key, $this->buildTree($value1, $value2)),
+            $isNested => DiffNodeFactory::createNested(
+                $key,
+                $this->buildTree($this->toArray($value1), $this->toArray($value2))
+            ),
             $value1 === $value2 => DiffNodeFactory::createUnchanged($key, $value1),
             default => DiffNodeFactory::createChanged($key, $value1, $value2),
         };
     }
 
-    private function isAssociativeArray(mixed $value): bool
+    private function isNested(mixed $value1, mixed $value2): bool
     {
-        return is_array($value) && $value !== [] && array_keys($value) !== range(0, count($value) - 1);
+        return is_object($value1) && is_object($value2);
+    }
+
+    private function toArray(mixed $value): array
+    {
+        return is_object($value) ? get_object_vars($value) : $value;
     }
 }

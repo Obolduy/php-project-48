@@ -2,12 +2,11 @@
 
 namespace Hexlet\Code\Formatters;
 
-use Exception;
 use Hexlet\Code\Formatters\Exceptions\JsonFormatterException;
 use Hexlet\Code\Formatters\Json\NodeConverter;
 use Hexlet\Code\Formatters\Json\ValueNormalizer;
 
-readonly class JsonFormatter
+readonly class JsonFormatter implements FormatterInterface
 {
     private NodeConverter $nodeConverter;
 
