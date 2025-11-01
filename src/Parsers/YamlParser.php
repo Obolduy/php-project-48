@@ -27,7 +27,7 @@ class YamlParser implements ParserInterface
             }
 
             return $result;
-        } catch (YamlParserException $e) {
+        } catch (\Exception $e) {
             throw new YamlParserException("Invalid YAML: " . $e->getMessage());
         }
     }
