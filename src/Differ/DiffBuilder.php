@@ -32,29 +32,20 @@ class DiffBuilder
     private function buildNode(string $key, array $data1, array $data2): DiffNode
     {
         $inFirst = array_key_exists($key, $data1);
-
-        if (!$inFirst) {
-            return DiffNodeFactory::createAdded($key, $data2[$key]);
-        }
-
         $inSecond = array_key_exists($key, $data2);
 
-        if (!$inSecond) {
-            return DiffNodeFactory::createRemoved($key, $data1[$key]);
-        }
+        $value1 = $inFirst ? $data1[$key] : null;
+        $value2 = $inSecond ? $data2[$key] : null;
 
-        $value1 = $data1[$key];
-        $value2 = $data2[$key];
+        $isAssociativeArray = $this->isAssociativeArray($value1) && $this->isAssociativeArray($value2);
 
-        if ($this->isAssociativeArray($value1) && $this->isAssociativeArray($value2)) {
-            return DiffNodeFactory::createNested($key, $this->buildTree($value1, $value2));
-        }
-
-        if ($value1 === $value2) {
-            return DiffNodeFactory::createUnchanged($key, $value1);
-        }
-
-        return DiffNodeFactory::createChanged($key, $value1, $value2);
+        return match (true) {
+            !$inFirst => DiffNodeFactory::createAdded($key, $value2),
+            !$inSecond => DiffNodeFactory::createRemoved($key, $value1),
+            $isAssociativeArray => DiffNodeFactory::createNested($key, $this->buildTree($value1, $value2)),
+            $value1 === $value2 => DiffNodeFactory::createUnchanged($key, $value1),
+            default => DiffNodeFactory::createChanged($key, $value1, $value2),
+        };
     }
 
     private function isAssociativeArray(mixed $value): bool

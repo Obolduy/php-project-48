@@ -11,19 +11,12 @@ readonly class ValueFormatter
 
     public function format(mixed $value, int $depth): string
     {
-        if (is_bool($value)) {
-            return $value ? ValueRepresentation::TRUE->value : ValueRepresentation::FALSE->value;
-        }
-
-        if (is_null($value)) {
-            return ValueRepresentation::NULL->value;
-        }
-
-        if (is_array($value)) {
-            return $this->formatArray($value, $depth);
-        }
-
-        return (string) $value;
+        return match (true) {
+            is_bool($value) => $value ? ValueRepresentation::TRUE->value : ValueRepresentation::FALSE->value,
+            is_null($value) => ValueRepresentation::NULL->value,
+            is_array($value) => $this->formatArray($value, $depth),
+            default => (string) $value,
+        };
     }
 
     private function formatArray(array $array, int $depth): string

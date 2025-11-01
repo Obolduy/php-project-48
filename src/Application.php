@@ -7,6 +7,7 @@ use Exception;
 use Hexlet\Code\Differ\DiffBuilder;
 use Hexlet\Code\Differ\Differ;
 use Hexlet\Code\Formatters\Enums\OutputFormatEnum;
+use Hexlet\Code\Formatters\Exceptions\JsonFormatterException;
 use Hexlet\Code\Formatters\OutputFormatter;
 use Hexlet\Code\Parsers\Common\Parser;
 
@@ -64,7 +65,7 @@ class Application
             echo $diff . PHP_EOL;
 
             return 0;
-        } catch (Exception $e) {
+        } catch (Exception | JsonFormatterException $e) {
             OutputFormatter::error($e->getMessage());
 
             return 1;

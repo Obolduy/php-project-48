@@ -3,6 +3,7 @@
 namespace Hexlet\Code\Formatters;
 
 use Exception;
+use Hexlet\Code\Formatters\Exceptions\JsonFormatterException;
 use Hexlet\Code\Formatters\Json\NodeConverter;
 use Hexlet\Code\Formatters\Json\ValueNormalizer;
 
@@ -16,14 +17,14 @@ readonly class JsonFormatter
     }
 
     /**
-     * @throws Exception
+     * @throws JsonFormatterException
      */
     public function format(array $tree): string
     {
         $result = json_encode($this->nodeConverter->convertTree($tree), JSON_PRETTY_PRINT);
 
         if ($result === false) {
-            throw new Exception('Failed to encode JSON: ' . json_last_error_msg());
+            throw new JsonFormatterException('Failed to encode JSON: ' . json_last_error_msg());
         }
 
         return $result;

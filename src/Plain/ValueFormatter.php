@@ -6,22 +6,14 @@ readonly class ValueFormatter
 {
     public function format(mixed $value): string
     {
-        if (is_array($value)) {
-            return PlainRepresentation::COMPLEX_VALUE->value;
-        }
-
-        if (is_bool($value)) {
-            return $value ? PlainRepresentation::TRUE->value : PlainRepresentation::FALSE->value;
-        }
-
-        if (is_null($value)) {
-            return PlainRepresentation::NULL->value;
-        }
-
-        if (is_string($value)) {
-            return PlainRepresentation::PROPERTY_SUFFIX->value . $value . PlainRepresentation::PROPERTY_SUFFIX->value;
-        }
-
-        return (string) $value;
+        return match (true) {
+            is_array($value) => PlainRepresentation::COMPLEX_VALUE->value,
+            is_bool($value) => $value ? PlainRepresentation::TRUE->value : PlainRepresentation::FALSE->value,
+            is_null($value) => PlainRepresentation::NULL->value,
+            is_string($value) => PlainRepresentation::PROPERTY_SUFFIX->value
+                . $value
+                . PlainRepresentation::PROPERTY_SUFFIX->value,
+            default => (string) $value,
+        };
     }
 }
