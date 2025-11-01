@@ -30,7 +30,7 @@ class DifferTest extends TestCase
     public static function flatFilesProvider(): array
     {
         $fixturesPath = __DIR__ . '/fixtures';
-        
+
         return [
             'json files' => [
                 $fixturesPath . '/file1.json',
@@ -63,7 +63,7 @@ class DifferTest extends TestCase
     public static function outputFormatsProvider(): array
     {
         $fixturesPath = __DIR__ . '/fixtures';
-        
+
         return [
             'stylish format with json' => [
                 $fixturesPath . '/file1_nested.json',
@@ -145,7 +145,7 @@ class DifferTest extends TestCase
     public static function identicalFilesProvider(): array
     {
         $fixturesPath = __DIR__ . '/fixtures';
-        
+
         return [
             'flat json files' => [
                 $fixturesPath . '/file1.json',
