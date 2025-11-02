@@ -24,7 +24,7 @@
     "require": {
         "docopt/docopt": "^1.0",
         "symfony/yaml": "^7.1",
-        "doctrine/collections": "^3.0"
+        "doctrine/collections": "^3.0.x-dev"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "4.x-dev",
