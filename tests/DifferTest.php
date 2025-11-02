@@ -23,7 +23,7 @@ class DifferTest extends TestCase
     {
         $file1 = $this->fixturesPath . '/file1.' . $extension1;
         $file2 = $this->fixturesPath . '/file2.' . $extension2;
-        
+
         $expected = trim(file_get_contents($this->fixturesPath . '/expected_diff.txt'));
         $actual = genDiff($file1, $file2);
 
@@ -46,7 +46,7 @@ class DifferTest extends TestCase
     ): void {
         $file1 = $this->fixturesPath . '/file1_nested.json';
         $file2 = $this->fixturesPath . '/file2_nested.json';
-        
+
         $expected = trim(file_get_contents($this->fixturesPath . '/' . $expectedFile));
         $actual = genDiff($file1, $file2, $format);
 
@@ -86,7 +86,7 @@ class DifferTest extends TestCase
     public function testGenDiffWithIdenticalFiles(string $extension): void
     {
         $file = $this->fixturesPath . '/file1.' . $extension;
-        
+
         $expected = trim(file_get_contents($this->fixturesPath . '/expected_identical.txt'));
         $actual = genDiff($file, $file);
 
