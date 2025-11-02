@@ -20,11 +20,11 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": false,
+    "prefer-stable": true,
     "require": {
         "docopt/docopt": "^1.0",
         "symfony/yaml": "^7.1",
-        "doctrine/collections": "^3.0.x-dev"
+        "doctrine/collections": "^2.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "4.x-dev",
