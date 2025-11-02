@@ -19,7 +19,7 @@ class DiffBuilder
     private function buildTree(array $data1, array $data2): array
     {
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-        $sortedKeys = new ArrayCollection($allKeys)->toArray();
+        $sortedKeys = (new ArrayCollection($allKeys))->toArray();
         sort($sortedKeys);
 
         $tree = [];
