@@ -39,14 +39,8 @@ class Differ
         string $pathToFile2,
         OutputFormatEnum $format = OutputFormatEnum::STYLISH
     ): string {
-        $absolutePath1 = $this->getAbsolutePath($pathToFile1);
-        $this->checkFileExists($absolutePath1, $pathToFile1);
-
-        $absolutePath2 = $this->getAbsolutePath($pathToFile2);
-        $this->checkFileExists($absolutePath2, $pathToFile2);
-
-        $data1 = $this->getParsedData($absolutePath1, $pathToFile1);
-        $data2 = $this->getParsedData($absolutePath2, $pathToFile2);
+        $data1 = $this->getParsedData($pathToFile1);
+        $data2 = $this->getParsedData($pathToFile2);
 
         $tree = $this->diffBuilder->build($data1, $data2);
 
@@ -85,8 +79,11 @@ class Differ
      * @throws AbstractParserException
      * @throws ParserException|ReaderException
      */
-    private function getParsedData(string $absolutePath, string $pathToFile): array
+    private function getParsedData(string $pathToFile): array
     {
+        $absolutePath = $this->getAbsolutePath($pathToFile);
+        $this->checkFileExists($absolutePath, $pathToFile);
+
         $content = $this->reader->read($absolutePath, $pathToFile);
         $extension = $this->getFileExtension($absolutePath);
 

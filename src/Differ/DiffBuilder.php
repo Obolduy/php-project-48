@@ -2,6 +2,7 @@
 
 namespace Hexlet\Code\Differ;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Hexlet\Code\Nodes\DTOs\DiffNode;
 use Hexlet\Code\Nodes\Factories\DiffNodeFactory;
 
@@ -18,7 +19,8 @@ class DiffBuilder
     private function buildTree(array $data1, array $data2): array
     {
         $allKeys = array_unique(array_merge(array_keys($data1), array_keys($data2)));
-        $sortedKeys = $this->getSortedKeys($allKeys);
+        $sortedKeys = new ArrayCollection($allKeys)->toArray();
+        sort($sortedKeys);
 
         $tree = [];
 
@@ -27,18 +29,6 @@ class DiffBuilder
         }
 
         return $tree;
-    }
-
-    /**
-     * @param array<string> $keys
-     * @return array<string>
-     */
-    private function getSortedKeys(array $keys): array
-    {
-        $sortedKeys = $keys;
-        sort($sortedKeys);
-
-        return $sortedKeys;
     }
 
     private function buildNode(string $key, array $data1, array $data2): DiffNode

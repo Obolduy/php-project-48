@@ -19,8 +19,11 @@ class DifferTest extends TestCase
     }
 
     #[DataProvider('flatFilesProvider')]
-    public function testGenDiffWithFlatFiles(string $file1, string $file2): void
+    public function testGenDiffWithFlatFiles(string $extension1, string $extension2): void
     {
+        $file1 = $this->fixturesPath . '/file1.' . $extension1;
+        $file2 = $this->fixturesPath . '/file2.' . $extension2;
+        
         $expected = trim(file_get_contents($this->fixturesPath . '/expected_diff.txt'));
         $actual = genDiff($file1, $file2);
 
@@ -29,31 +32,21 @@ class DifferTest extends TestCase
 
     public static function flatFilesProvider(): array
     {
-        $fixturesPath = __DIR__ . '/fixtures';
-
         return [
-            'json files' => [
-                $fixturesPath . '/file1.json',
-                $fixturesPath . '/file2.json'
-            ],
-            'yaml files' => [
-                $fixturesPath . '/file1.yml',
-                $fixturesPath . '/file2.yml'
-            ],
-            'mixed formats' => [
-                $fixturesPath . '/file1.json',
-                $fixturesPath . '/file2.yml'
-            ]
+            'json files' => ['json', 'json'],
+            'yaml files' => ['yml', 'yml'],
+            'mixed formats' => ['json', 'yml']
         ];
     }
 
     #[DataProvider('outputFormatsProvider')]
     public function testGenDiffWithDifferentOutputFormats(
-        string $file1,
-        string $file2,
         OutputFormatEnum $format,
         string $expectedFile
     ): void {
+        $file1 = $this->fixturesPath . '/file1_nested.json';
+        $file2 = $this->fixturesPath . '/file2_nested.json';
+        
         $expected = trim(file_get_contents($this->fixturesPath . '/' . $expectedFile));
         $actual = genDiff($file1, $file2, $format);
 
@@ -62,60 +55,16 @@ class DifferTest extends TestCase
 
     public static function outputFormatsProvider(): array
     {
-        $fixturesPath = __DIR__ . '/fixtures';
-
         return [
-            'stylish format with json' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.json',
+            'stylish format' => [
                 OutputFormatEnum::STYLISH,
                 'expected_nested_stylish.txt'
             ],
-            'stylish format with yaml' => [
-                $fixturesPath . '/file1_nested.yml',
-                $fixturesPath . '/file2_nested.yml',
-                OutputFormatEnum::STYLISH,
-                'expected_nested_stylish.txt'
-            ],
-            'stylish format with mixed' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.yml',
-                OutputFormatEnum::STYLISH,
-                'expected_nested_stylish.txt'
-            ],
-            'plain format with json' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.json',
+            'plain format' => [
                 OutputFormatEnum::PLAIN,
                 'expected_nested_plain.txt'
             ],
-            'plain format with yaml' => [
-                $fixturesPath . '/file1_nested.yml',
-                $fixturesPath . '/file2_nested.yml',
-                OutputFormatEnum::PLAIN,
-                'expected_nested_plain.txt'
-            ],
-            'plain format with mixed' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.yml',
-                OutputFormatEnum::PLAIN,
-                'expected_nested_plain.txt'
-            ],
-            'json format with json' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.json',
-                OutputFormatEnum::JSON,
-                'expected_nested_json.txt'
-            ],
-            'json format with yaml' => [
-                $fixturesPath . '/file1_nested.yml',
-                $fixturesPath . '/file2_nested.yml',
-                OutputFormatEnum::JSON,
-                'expected_nested_json.txt'
-            ],
-            'json format with mixed' => [
-                $fixturesPath . '/file1_nested.json',
-                $fixturesPath . '/file2_nested.yml',
+            'json format' => [
                 OutputFormatEnum::JSON,
                 'expected_nested_json.txt'
             ]
@@ -134,9 +83,11 @@ class DifferTest extends TestCase
     }
 
     #[DataProvider('identicalFilesProvider')]
-    public function testGenDiffWithIdenticalFiles(string $file, string $expectedFile): void
+    public function testGenDiffWithIdenticalFiles(string $extension): void
     {
-        $expected = trim(file_get_contents($this->fixturesPath . '/' . $expectedFile));
+        $file = $this->fixturesPath . '/file1.' . $extension;
+        
+        $expected = trim(file_get_contents($this->fixturesPath . '/expected_identical.txt'));
         $actual = genDiff($file, $file);
 
         $this->assertEquals($expected, trim($actual));
@@ -144,17 +95,9 @@ class DifferTest extends TestCase
 
     public static function identicalFilesProvider(): array
     {
-        $fixturesPath = __DIR__ . '/fixtures';
-
         return [
-            'flat json files' => [
-                $fixturesPath . '/file1.json',
-                'expected_identical.txt'
-            ],
-            'flat yaml files' => [
-                $fixturesPath . '/file1.yml',
-                'expected_identical.txt'
-            ]
+            'flat json files' => ['json'],
+            'flat yaml files' => ['yml']
         ];
     }
 

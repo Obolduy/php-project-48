@@ -23,7 +23,8 @@
     "prefer-stable": false,
     "require": {
         "docopt/docopt": "^1.0",
-        "symfony/yaml": "^7.1"
+        "symfony/yaml": "^7.1",
+        "doctrine/collections": "^3.0"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "4.x-dev",
